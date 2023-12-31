@@ -32,6 +32,13 @@ class NotesViewModel : ViewModel() {
     var state by mutableStateOf(NotesState())
         private set
 
+    fun onValue(value:String,text:String){
+        when(text){
+            "title"->state = state.copy(title = value)
+            "note" ->state = state.copy(note = value)
+        }
+    }
+
     fun fetchNotes() {
         val email = auth.currentUser?.email
         firestore.collection("Notes")
@@ -94,7 +101,40 @@ class NotesViewModel : ViewModel() {
 
             }
     }
+    fun updateNote(idDoc: String,onSuccess: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val editNote = hashMapOf(
+                    "title" to state.title,
+                    "note" to state.note,
 
+                )
+                firestore.collection("Notes").document(idDoc)
+                    .update(editNote as Map<String,Any>)
+                    .addOnSuccessListener {
+                        onSuccess()
+                    }
+            } catch (e: Exception) {
+                Log.d("ERROR EDIT ", "Error at edit ${e.localizedMessage}")
+            }
+        }
+
+    }
+
+    fun deleteNote(idDoc: String,onSuccess: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                firestore.collection("Notes").document(idDoc)
+                    .delete()
+                    .addOnSuccessListener {
+                        onSuccess()
+                    }
+            } catch (e: Exception) {
+                Log.d("ERROR DELETE ", "Error at delete ${e.localizedMessage}")
+            }
+        }
+
+    }
     fun signOut() {
         auth.signOut()
     }
