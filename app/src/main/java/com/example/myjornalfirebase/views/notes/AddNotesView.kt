@@ -26,11 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.myjornalfirebase.viewModel.NotesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddNotesView(navController: NavController, notesViewModel: NotesViewModel) {
+fun AddNotesView(navController: NavHostController, notesViewModel: NotesViewModel) {
 
     var title by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
